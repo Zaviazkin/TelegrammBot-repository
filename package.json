@@ -1,0 +1,22 @@
+{
+  "name": "telegrambot",
+  "version": "1.0.0",
+  "description": "My telegram bot",
+  "main": "bot.js",
+  "scripts": {
+    "start": "nodemon bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "\"my",
+    "bot",
+    "bot",
+    "exemple\""
+  ],
+  "author": "Roman <zavyazkin8@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^2.0.5",
+    "telegraf": "^3.38.0"
+  }
+}
