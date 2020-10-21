@@ -1,5 +1,4 @@
-//t.me/BBBobbot
-//1161475824:AAEefR64wLIqLK2zft_WNohsooFCLx_e2XY
+
 
 const { Telegraf } = require("telegraf");
 
@@ -9,7 +8,7 @@ const Markup = require('telegraf/markup')
 
 const { Keyboard } = require('telegram-keyboard')
 
-const bot = new Telegraf("1161475824:AAEefR64wLIqLK2zft_WNohsooFCLx_e2XY");
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const {inlineMessageRatingKeyboard} = require('./botButtonModule')
 
