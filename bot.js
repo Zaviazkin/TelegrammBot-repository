@@ -1,16 +1,68 @@
 
 
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup} = require("telegraf");
 
 const Extra = require('telegraf/extra')
 
-const Markup = require('telegraf/markup')
-
 const { Keyboard } = require('telegram-keyboard')
 
-const bot = new Telegraf(process.env.BOT_TOKEN1);
+const bot = new Telegraf('1161475824:AAEefR64wLIqLK2zft_WNohsooFCLx_e2XY');
 
 const {inlineMessageRatingKeyboard} = require('./botButtonModule')
+
+
+
+
+bot.hears('КОМАНДЫ', (ctx) => {
+  ctx.reply(`Ниже перечислены все команды бота:\n
+  /info - информация о боте (описание, автор и тд.) \n
+  /help - раздел помощи \n
+  /schedule - информация о расписании занятий на сегодня \n
+  /joke - шутка от бота \n
+  `)
+  ctx.telegram.sendMessage(ctx.from.id, "Тебе понравился бот?", inlineMessageRatingKeyboard);
+})
+
+
+
+
+
+const { make, combine } = Keyboard
+
+const backKeyboard = make(['Back'])
+
+const main = ({ reply }) => {
+    return reply('MENU', make(['КОМАНДЫ', 'РАСПИСАНИЕ', 'ПИРАМИДА ПОЖЕЛАНИЙ'], { columns: 1 }).builtIn())
+}
+
+bot.start(main)
+
+bot.hears('Back', main)
+
+bot.hears('КОМАНДЫ', ({ reply }) => {
+    const keyboard = make(['1', '2', '3', '4', '5', '6'], { columns: 2 })
+
+    return reply('КОМАНДЫ', combine(keyboard, backKeyboard).builtIn())
+})
+
+bot.hears('РАСПИСАНИЕ', ({ reply }) => {
+    const keyboard = make(['Понедельник','Вторник', "Среда","Четверг", "Пятница"], {
+        wrap: row => row.length > Math.floor(Math.random() * 8)
+    })
+
+    return reply('РАСПИСАНИЕ', combine(keyboard, backKeyboard).builtIn())
+})
+
+bot.hears('ПИРАМИДА ПОЖЕЛАНИЙ', ({ reply }) => {
+    const keyboard = make(['-1-', '-2-', '-3-', '-4-', '-5-', '-6-', '-7-'], {
+        wrap: (row, i) => row.length >= (i + 1) / 2
+    })
+
+    return reply('ПИРАМИДА ПОЖЕЛАНИЙ', combine(keyboard, backKeyboard).builtIn())
+})
+
+
+
 
 bot.start((ctx) => {
   if (ctx.from.last_name) {
@@ -30,6 +82,11 @@ bot.start((ctx) => {
     ])))
 
 });
+
+
+
+
+
 
 bot.command("info", (ctx) => {
   ctx.reply(`Я интелектуальный бот - Боби,
@@ -52,8 +109,6 @@ bot.action('all right', (ctx) => {
   ctx.editMessageText('Желаю всегда такого настроения!!!',
     Extra.HTML())
 })
-
-
 
 
 
@@ -313,73 +368,6 @@ function startBot() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-bot.hears('КОМАНДЫ', (ctx) => {
-  ctx.reply(`Ниже перечислены все команды бота:\n
-  /info - информация о боте (описание, автор и тд.) \n
-  /help - раздел помощи \n
-  /schedule - информация о расписании занятий на сегодня \n
-  /joke - шутка от бота \n
-  `)
-  ctx.telegram.sendMessage(ctx.from.id, "Тебе понравился бот?", inlineMessageRatingKeyboard);
-})
-
-
-
-const { make, combine } = Keyboard
-
-
-const backKeyboard = make(['Back'])
-
-const main = ({ reply }) => {
-    return reply('MENU', make(['КОМАНДЫ', 'РАСПИСАНИЕ', 'ПИРАМИДА ПОЖЕЛАНИЙ'], { columns: 1 }).builtIn())
-}
-
-bot.start(main)
-bot.hears('Back', main)
-
-bot.hears('КОМАНДЫ', ({ reply }) => {
-    const keyboard = make(['1', '2', '3', '4', '5', '6'], { columns: 2 })
-
-    return reply('КОМАНДЫ', combine(keyboard, backKeyboard).builtIn())
-})
-
-bot.hears('РАСПИСАНИЕ', ({ reply }) => {
-    const keyboard = make(['Понедельник','Вторник', "Среда","Четверг", "Пятница"], {
-        wrap: row => row.length > Math.floor(Math.random() * 8)
-    })
-
-    return reply('РАСПИСАНИЕ', combine(keyboard, backKeyboard).builtIn())
-})
-
-bot.hears('ПИРАМИДА ПОЖЕЛАНИЙ', ({ reply }) => {
-    const keyboard = make(['-1-', '-2-', '-3-', '-4-', '-5-', '-6-', '-7-'], {
-        wrap: (row, i) => row.length >= (i + 1) / 2
-    })
-
-    return reply('ПИРАМИДА ПОЖЕЛАНИЙ', combine(keyboard, backKeyboard).builtIn())
-})
 
 
 
