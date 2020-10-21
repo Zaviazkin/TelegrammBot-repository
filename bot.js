@@ -8,7 +8,7 @@ const Markup = require('telegraf/markup')
 
 const { Keyboard } = require('telegram-keyboard')
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN1);
 
 const {inlineMessageRatingKeyboard} = require('./botButtonModule')
 
