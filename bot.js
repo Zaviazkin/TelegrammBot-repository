@@ -3,20 +3,33 @@
 
 const { Telegraf } = require("telegraf");
 
+const Extra = require('telegraf/extra')
+
+const Markup = require('telegraf/markup')
+
+const { Keyboard } = require('telegram-keyboard')
+
 const bot = new Telegraf("1161475824:AAEefR64wLIqLK2zft_WNohsooFCLx_e2XY");
+
+const {inlineMessageRatingKeyboard} = require('./botButtonModule')
 
 bot.start((ctx) => {
   if (ctx.from.last_name) {
     ctx.reply(`Привет, ${ctx.from.first_name} ${ctx.from.last_name}!
   Я бот Бобби ! )
-  Чем могу помочь?
-  /cmds - инфрмация о командах бота`);
+  Чем могу помочь?`);
   } else {
     ctx.reply(`Привет, ${ctx.from.first_name}!
     Я бот Бобби ! )
-  Чем могу помочь?
-  /cmds - инфрмация о командах бота`);
+  Чем могу помочь?`);
   }
+  ctx.reply('Как настроение?',
+    Extra.HTML()
+    .markup(Markup.inlineKeyboard([
+      Markup.callbackButton('Неплохо', 'not bad'),
+      Markup.callbackButton('Лучше всех', 'all right')
+    ])))
+
 });
 
 bot.command("info", (ctx) => {
@@ -27,6 +40,28 @@ bot.command("info", (ctx) => {
   zavyazkin8@gmail.com
   +996 708 733 000`);
 });
+
+
+
+
+
+bot.action('not bad', (ctx) => {
+  ctx.editMessageText('Надеюсь еще улучшиться! Улыбнись)))',
+    Extra.HTML())
+})
+bot.action('all right', (ctx) => {
+  ctx.editMessageText('Желаю всегда такого настроения!!!',
+    Extra.HTML())
+})
+
+
+
+
+
+
+
+
+
 
 const MY_SCHEDULE = [
   {
@@ -192,6 +227,20 @@ bot.command("schedule", (ctx) => {
   }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const JOKES_ARRAY = [
   "Кассирша спрашивает у покупателя: — Молодой человек, мелочь не посмотрите? Покупатель: — Ну... показывайте... 🤣🤣🤣",
   "- Девушка, а сколько вам лет?- Восемнадцать лет и несколько месяцев.- А конкретно - сколько месяцев?- Сто шестьдесят восемь...🤣🤣🤣",
@@ -224,15 +273,22 @@ bot.command("advice", (ctx) => {
        Почти ни у кого нет работы, которую можно обожать каждую секунду.`);
 });
 
-bot.command("cmds", (ctx) => {
-  ctx.reply(`Ниже перечислены все команды бота:\n
-  /cmds - информация о командах бота \n
-  /info - информация о боте (описание, автор и тд.) \n
-  /help - раздел помощи \n
-  /schedule - информация о расписании занятий на сегодня \n
-  /joke - шутка от бота \n
-  `);
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -240,9 +296,173 @@ bot.on("sticker", (ctx) => {
   ctx.reply("Нельзя отправлять стикеры!!! 🤪");
 });
 
+
+
+
+
+
+
+
+
 function startBot() {
-  bot.launch();
+  bot.startPolling();
   console.log("bot is started");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bot.hears('КОМАНДЫ', (ctx) => {
+  ctx.reply(`Ниже перечислены все команды бота:\n
+  /info - информация о боте (описание, автор и тд.) \n
+  /help - раздел помощи \n
+  /schedule - информация о расписании занятий на сегодня \n
+  /joke - шутка от бота \n
+  `)
+  ctx.telegram.sendMessage(ctx.from.id, "Тебе понравился бот?", inlineMessageRatingKeyboard);
+})
+
+
+
+const { make, combine } = Keyboard
+
+
+const backKeyboard = make(['Back'])
+
+const main = ({ reply }) => {
+    return reply('MENU', make(['КОМАНДЫ', 'РАСПИСАНИЕ', 'ПИРАМИДА ПОЖЕЛАНИЙ'], { columns: 1 }).builtIn())
+}
+
+bot.start(main)
+bot.hears('Back', main)
+
+bot.hears('КОМАНДЫ', ({ reply }) => {
+    const keyboard = make(['1', '2', '3', '4', '5', '6'], { columns: 2 })
+
+    return reply('КОМАНДЫ', combine(keyboard, backKeyboard).builtIn())
+})
+
+bot.hears('РАСПИСАНИЕ', ({ reply }) => {
+    const keyboard = make(['Понедельник','Вторник', "Среда","Четверг", "Пятница"], {
+        wrap: row => row.length > Math.floor(Math.random() * 8)
+    })
+
+    return reply('РАСПИСАНИЕ', combine(keyboard, backKeyboard).builtIn())
+})
+
+bot.hears('ПИРАМИДА ПОЖЕЛАНИЙ', ({ reply }) => {
+    const keyboard = make(['-1-', '-2-', '-3-', '-4-', '-5-', '-6-', '-7-'], {
+        wrap: (row, i) => row.length >= (i + 1) / 2
+    })
+
+    return reply('ПИРАМИДА ПОЖЕЛАНИЙ', combine(keyboard, backKeyboard).builtIn())
+})
+
+
+
+
+
+
+bot.hears('Понедельник', (ctx) => {
+  ctx.reply(`${MY_SCHEDULE[1].lessons[0]} \n
+  ${MY_SCHEDULE[1].lessons[1]}\n
+  ${MY_SCHEDULE[1].lessons[2]}`)
+})
+
+bot.hears('Вторник', (ctx) => {
+  ctx.reply(`${MY_SCHEDULE[2].lessons[0]} \n
+  ${MY_SCHEDULE[2].lessons[1]}\n
+  ${MY_SCHEDULE[2].lessons[2]}`)
+})
+
+bot.hears('Среда', (ctx) => {
+  ctx.reply(`${MY_SCHEDULE[3].lessons[0]} \n
+  ${MY_SCHEDULE[3].lessons[1]}\n
+  ${MY_SCHEDULE[3].lessons[2]}`)
+})
+
+bot.hears('Четверг', (ctx) => {
+  ctx.reply(`${MY_SCHEDULE[4].lessons[0]} \n
+  ${MY_SCHEDULE[4].lessons[1]}\n
+  ${MY_SCHEDULE[4].lessons[2]}`)
+})
+
+bot.hears('Пятница', (ctx) => {
+  ctx.reply(`${MY_SCHEDULE[5].lessons[0]} \n
+  ${MY_SCHEDULE[5].lessons[1]}\n
+  ${MY_SCHEDULE[5].lessons[2]}`)
+})
+
+
+
+
+bot.hears('-1-', (ctx) => {
+  ctx.reply(`Самые лучшие пожелания всегда на верхушке пирамиды!
+  оглянись! тебе нечего желать ... у тебя все есть!!!`)
+})
+
+bot.hears('-2-', (ctx) => {
+  ctx.reply(`Верь в себя и все сбудиться!`)
+})
+
+bot.hears('-3-', (ctx) => {
+  ctx.reply(`Удача гдето-близко...ты рядом!!!
+  продолжай искать)`)
+})
+
+
+bot.hears('-4-', (ctx) => {
+  ctx.reply(`Главное не вешать нос! упорство 
+  и огрмное желание - притягивают успех!`)
+})
+
+bot.hears('-5-', (ctx) => {
+  ctx.reply(`Желаю как на свадьбе :
+  гору любви! Дофига добра и миллион бабла!`)
+})
+
+bot.hears('-6-', (ctx) => {
+  ctx.reply(`Представляешь все пожелания сверху остались!`)
+})
+bot.hears('-7-', (ctx) => {
+  ctx.reply(`Я тебе желаю много новых друзей!
+  Но не забывай старых! Проверенных временем ну и тобой!`)
+})
+
+bot.on('message', (ctx)=> {
+  ctx.reply('я пока не могу вам ответить ...(')
+})
+
+
+  
+
+
+
+bot.action('like', (ctx) => ctx.editMessageText('🎉 Спасибо ! Я старался)) 🎉'))
+bot.action('dislike', (ctx) => ctx.editMessageText('okey, не получилось'))
 
 startBot();
