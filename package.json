@@ -17,6 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "nodemon": "^2.0.5",
-    "telegraf": "^3.38.0"
+    "telegraf": "^3.38.0",
+    "telegraf-keyboard": "^2.0.1",
+    "telegram-keyboard": "^2.0.2"
   }
 }
